@@ -5,16 +5,9 @@ import models.Factura;
 import java.sql.*;
 import java.util.ArrayList;
 
-/**
- * DAO para gestión de facturas.
- * Incluye métodos para crear, buscar, listar y cancelar facturas.
- */
 public class FacturaDAO {
 
-    /**
-     * Genera el siguiente número de factura correlativo.
-     * @return Número de factura siguiente
-     */
+    // Generar siguiente número correlativo de factura
     public int generarNumeroFactura() {
         int numero = 1;
         String sql = "SELECT MAX(numero_factura) AS max_num FROM facturas";
@@ -22,20 +15,15 @@ public class FacturaDAO {
              Statement st = con.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
 
-            if (rs.next()) {
-                numero = rs.getInt("max_num") + 1;
-            }
+            if (rs.next()) numero = rs.getInt("max_num") + 1;
+
         } catch (SQLException e) {
-            System.err.println("Error al generar número de factura: " + e.getMessage());
+            System.out.println("Error al generar número de factura: " + e.getMessage());
         }
         return numero;
     }
 
-    /**
-     * Guarda una factura en la base de datos.
-     * @param factura Objeto Factura
-     * @return true si la operación fue exitosa
-     */
+    // Guardar factura
     public boolean guardarFactura(Factura factura) {
         String sql = "INSERT INTO facturas(numero_factura, id_cliente, id_empleado, total, numero_caja) VALUES(?,?,?,?,?)";
         try (Connection con = ConexionBD.getConexion();
@@ -47,26 +35,19 @@ public class FacturaDAO {
             ps.setDouble(4, factura.getTotal());
             ps.setInt(5, factura.getNumeroCaja());
 
-            int rows = ps.executeUpdate();
-            if (rows > 0) {
-                try (ResultSet rs = ps.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        factura.setIdFactura(rs.getInt(1));
-                    }
-                }
+            if (ps.executeUpdate() > 0) {
+                ResultSet rs = ps.getGeneratedKeys();
+                if (rs.next()) factura.setIdFactura(rs.getInt(1));
                 return true;
             }
+
         } catch (SQLException e) {
-            System.err.println("Error al guardar factura: " + e.getMessage());
+            System.out.println("Error al guardar factura: " + e.getMessage());
         }
         return false;
     }
 
-    /**
-     * Cancela una factura, reintegrando stock.
-     * @param idFactura ID de la factura
-     * @return true si se eliminó correctamente
-     */
+    // Cancelar factura y reintegrar stock
     public boolean cancelarFactura(int idFactura) {
         DetalleFacturaDAO detalleDAO = new DetalleFacturaDAO();
         if (detalleDAO.reintegrarStock(idFactura)) {
@@ -76,16 +57,13 @@ public class FacturaDAO {
                 ps.setInt(1, idFactura);
                 return ps.executeUpdate() > 0;
             } catch (SQLException e) {
-                System.err.println("Error al cancelar factura: " + e.getMessage());
+                System.out.println("Error al cancelar factura: " + e.getMessage());
             }
         }
         return false;
     }
 
-    /**
-     * Lista todas las facturas registradas.
-     * @return Lista de Factura
-     */
+    // Listar todas las facturas
     public ArrayList<Factura> listarFacturas() {
         ArrayList<Factura> lista = new ArrayList<>();
         String sql = "SELECT * FROM facturas";
@@ -106,16 +84,12 @@ public class FacturaDAO {
             }
 
         } catch (SQLException e) {
-            System.err.println("Error al listar facturas: " + e.getMessage());
+            System.out.println("Error al listar facturas: " + e.getMessage());
         }
         return lista;
     }
 
-    /**
-     * Busca una factura por su número.
-     * @param numeroFactura Número de factura
-     * @return Objeto Factura o null si no existe
-     */
+    // Buscar factura por número
     public Factura buscarFactura(int numeroFactura) {
         Factura factura = null;
         String sql = "SELECT * FROM facturas WHERE numero_factura=?";
@@ -123,26 +97,68 @@ public class FacturaDAO {
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, numeroFactura);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    factura = new Factura();
-                    factura.setIdFactura(rs.getInt("id_factura"));
-                    factura.setNumeroFactura(rs.getInt("numero_factura"));
-                    factura.setIdCliente(rs.getInt("id_cliente"));
-                    factura.setIdEmpleado(rs.getInt("id_empleado"));
-                    factura.setFecha(rs.getTimestamp("fecha"));
-                    factura.setTotal(rs.getDouble("total"));
-                    factura.setNumeroCaja(rs.getInt("numero_caja"));
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                factura = new Factura();
+                factura.setIdFactura(rs.getInt("id_factura"));
+                factura.setNumeroFactura(rs.getInt("numero_factura"));
+                factura.setIdCliente(rs.getInt("id_cliente"));
+                factura.setIdEmpleado(rs.getInt("id_empleado"));
+                factura.setFecha(rs.getTimestamp("fecha"));
+                factura.setTotal(rs.getDouble("total"));
+                factura.setNumeroCaja(rs.getInt("numero_caja"));
 
-                    DetalleFacturaDAO detalleDAO = new DetalleFacturaDAO();
-                    factura.setDetalles(detalleDAO.listarDetallesConArticulo(factura.getIdFactura()));
-                }
+                // Obtener detalles
+                DetalleFacturaDAO detalleDAO = new DetalleFacturaDAO();
+                factura.setDetalles(detalleDAO.listarDetallesConArticulo(factura.getIdFactura()));
             }
 
         } catch (SQLException e) {
-            System.err.println("Error al buscar factura: " + e.getMessage());
+            System.out.println("Error al buscar factura: " + e.getMessage());
+        }
+        return factura;
+    }
+
+    // Eliminar factura por número
+    public boolean eliminarFacturaPorNumero(int numeroFactura) {
+        int idFactura = -1;
+        String sqlId = "SELECT id_factura FROM facturas WHERE numero_factura=?";
+        String sqlDetalles = "DELETE FROM detalle_factura WHERE id_factura=?";
+        String sqlFactura = "DELETE FROM facturas WHERE numero_factura=?";
+
+        try (Connection con = ConexionBD.getConexion();
+             PreparedStatement psId = con.prepareStatement(sqlId)) {
+
+            psId.setInt(1, numeroFactura);
+            ResultSet rs = psId.executeQuery();
+            if (rs.next()) idFactura = rs.getInt("id_factura");
+            else return false;
+
+        } catch (SQLException e) {
+            System.out.println("Error al buscar ID de factura: " + e.getMessage());
+            return false;
         }
 
-        return factura;
+        try (Connection con = ConexionBD.getConexion();
+             PreparedStatement psDet = con.prepareStatement(sqlDetalles)) {
+
+            psDet.setInt(1, idFactura);
+            psDet.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar detalles: " + e.getMessage());
+            return false;
+        }
+
+        try (Connection con = ConexionBD.getConexion();
+             PreparedStatement psFac = con.prepareStatement(sqlFactura)) {
+
+            psFac.setInt(1, numeroFactura);
+            return psFac.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar factura: " + e.getMessage());
+            return false;
+        }
     }
 }
