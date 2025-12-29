@@ -7,7 +7,7 @@ import java.util.List;
 public class Factura {
 
     private int idFactura;
-    private int numeroFactura; // correlativo generado automáticamente
+    private int numeroFactura;
     private int idCliente;
     private int idEmpleado;
     private Date fecha;
@@ -15,12 +15,8 @@ public class Factura {
     private int numeroCaja;
     private List<DetalleFactura> detalles;
 
-    // Constructor vacío
-    public Factura() {
-        this.detalles = new ArrayList<>();
-    }
+    public Factura() { this.detalles = new ArrayList<>(); }
 
-    // Constructor sin ID (nueva factura)
     public Factura(int numeroFactura, int idCliente, int idEmpleado, Date fecha, double total, int numeroCaja) {
         this.numeroFactura = numeroFactura;
         this.idCliente = idCliente;
@@ -31,7 +27,6 @@ public class Factura {
         this.detalles = new ArrayList<>();
     }
 
-    // Constructor completo (BD)
     public Factura(int idFactura, int numeroFactura, int idCliente, int idEmpleado,
                    Date fecha, double total, int numeroCaja, List<DetalleFactura> detalles) {
         this.idFactura = idFactura;
@@ -44,32 +39,29 @@ public class Factura {
         this.detalles = detalles != null ? detalles : new ArrayList<>();
     }
 
-    // Getters y Setters
     public int getIdFactura() { return idFactura; }
-    public void setIdFactura(final int idFactura) { this.idFactura = idFactura; }
+    public void setIdFactura(int idFactura) { this.idFactura = idFactura; }
 
     public int getNumeroFactura() { return numeroFactura; }
-    public void setNumeroFactura(final int numeroFactura) { this.numeroFactura = numeroFactura; }
+    public void setNumeroFactura(int numeroFactura) { this.numeroFactura = numeroFactura; }
 
     public int getIdCliente() { return idCliente; }
-    public void setIdCliente(final int idCliente) { this.idCliente = idCliente; }
+    public void setIdCliente(int idCliente) { this.idCliente = idCliente; }
 
     public int getIdEmpleado() { return idEmpleado; }
-    public void setIdEmpleado(final int idEmpleado) { this.idEmpleado = idEmpleado; }
+    public void setIdEmpleado(int idEmpleado) { this.idEmpleado = idEmpleado; }
 
     public Date getFecha() { return fecha; }
-    public void setFecha(final Date fecha) { this.fecha = fecha; }
+    public void setFecha(Date fecha) { this.fecha = fecha; }
 
     public double getTotal() { return total; }
-    public void setTotal(final double total) { this.total = total; }
+    public void setTotal(double total) { this.total = total; }
 
     public int getNumeroCaja() { return numeroCaja; }
-    public void setNumeroCaja(final int numeroCaja) { this.numeroCaja = numeroCaja; }
+    public void setNumeroCaja(int numeroCaja) { this.numeroCaja = numeroCaja; }
 
     public List<DetalleFactura> getDetalles() { return detalles; }
-    public void setDetalles(final List<DetalleFactura> detalles) {
-        this.detalles = detalles != null ? detalles : new ArrayList<>();
-    }
+    public void setDetalles(List<DetalleFactura> detalles) { this.detalles = detalles != null ? detalles : new ArrayList<>(); }
 
     @Override
     public String toString() {
