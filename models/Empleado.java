@@ -2,17 +2,14 @@ package models;
 
 public class Empleado {
 
-    // Atributos
     private int idEmpleado;
-    private String codigo;   // Código interno o identificador
+    private String codigo;
     private String nombre;
     private String puesto;
     private double salario;
 
-    // Constructor vacío
     public Empleado() {}
 
-    // Constructor sin ID (útil para inserciones)
     public Empleado(String codigo, String nombre, String puesto, double salario) {
         this.codigo = codigo;
         this.nombre = nombre;
@@ -20,27 +17,25 @@ public class Empleado {
         this.salario = salario;
     }
 
-    // Constructor completo
     public Empleado(int idEmpleado, String codigo, String nombre, String puesto, double salario) {
         this(codigo, nombre, puesto, salario);
         this.idEmpleado = idEmpleado;
     }
 
-    // Getters y Setters
     public int getIdEmpleado() { return idEmpleado; }
-    public void setIdEmpleado(final int idEmpleado) { this.idEmpleado = idEmpleado; }
+    public void setIdEmpleado(int idEmpleado) { this.idEmpleado = idEmpleado; }
 
     public String getCodigo() { return codigo; }
-    public void setCodigo(final String codigo) { this.codigo = codigo; }
+    public void setCodigo(String codigo) { this.codigo = codigo; }
 
     public String getNombre() { return nombre; }
-    public void setNombre(final String nombre) { this.nombre = nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
     public String getPuesto() { return puesto; }
-    public void setPuesto(final String puesto) { this.puesto = puesto; }
+    public void setPuesto(String puesto) { this.puesto = puesto; }
 
     public double getSalario() { return salario; }
-    public void setSalario(final double salario) { this.salario = salario; }
+    public void setSalario(double salario) { this.salario = salario; }
 
     @Override
     public String toString() {
@@ -50,8 +45,5 @@ public class Empleado {
         );
     }
 
-    // Método usado para mostrar empleados en JComboBox (facturación)
-    public String toComboString() {
-        return nombre;
-    }
+    public String toComboString() { return nombre; }
 }
