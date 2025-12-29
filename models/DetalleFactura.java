@@ -10,10 +10,8 @@ public class DetalleFactura {
     private double precioUnitario;
     private double subtotal;
 
-    // Constructor vacío
     public DetalleFactura() {}
 
-    // Constructor sin ID
     public DetalleFactura(int idArticulo, String nombreArticulo, int cantidad, double precioUnitario) {
         this.idArticulo = idArticulo;
         this.nombreArticulo = nombreArticulo;
@@ -22,7 +20,6 @@ public class DetalleFactura {
         calcularSubtotal();
     }
 
-    // Constructor completo
     public DetalleFactura(int idDetalle, int idFactura, int idArticulo, String nombreArticulo,
                           int cantidad, double precioUnitario) {
         this(idArticulo, nombreArticulo, cantidad, precioUnitario);
@@ -30,37 +27,27 @@ public class DetalleFactura {
         this.idFactura = idFactura;
     }
 
-    // Getters y Setters
     public int getIdDetalle() { return idDetalle; }
-    public void setIdDetalle(final int idDetalle) { this.idDetalle = idDetalle; }
+    public void setIdDetalle(int idDetalle) { this.idDetalle = idDetalle; }
 
     public int getIdFactura() { return idFactura; }
-    public void setIdFactura(final int idFactura) { this.idFactura = idFactura; }
+    public void setIdFactura(int idFactura) { this.idFactura = idFactura; }
 
     public int getIdArticulo() { return idArticulo; }
-    public void setIdArticulo(final int idArticulo) { this.idArticulo = idArticulo; }
+    public void setIdArticulo(int idArticulo) { this.idArticulo = idArticulo; }
 
     public String getNombreArticulo() { return nombreArticulo; }
-    public void setNombreArticulo(final String nombreArticulo) { this.nombreArticulo = nombreArticulo; }
+    public void setNombreArticulo(String nombreArticulo) { this.nombreArticulo = nombreArticulo; }
 
     public int getCantidad() { return cantidad; }
-    public void setCantidad(final int cantidad) {
-        this.cantidad = cantidad;
-        calcularSubtotal();
-    }
+    public void setCantidad(int cantidad) { this.cantidad = cantidad; calcularSubtotal(); }
 
     public double getPrecioUnitario() { return precioUnitario; }
-    public void setPrecioUnitario(final double precioUnitario) {
-        this.precioUnitario = precioUnitario;
-        calcularSubtotal();
-    }
+    public void setPrecioUnitario(double precioUnitario) { this.precioUnitario = precioUnitario; calcularSubtotal(); }
 
     public double getSubtotal() { return subtotal; }
 
-    // Cálculo interno del subtotal
-    private void calcularSubtotal() {
-        this.subtotal = this.cantidad * this.precioUnitario;
-    }
+    private void calcularSubtotal() { this.subtotal = this.cantidad * this.precioUnitario; }
 
     @Override
     public String toString() {
