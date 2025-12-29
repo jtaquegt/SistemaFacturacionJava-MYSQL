@@ -6,16 +6,16 @@ import java.io.PrintWriter;
 import java.sql.*;
 
 /**
- * DAO para generar reportes HTML a partir de consultas SQL.
- * Permite crear reportes para artículos, proveedores, clientes, empleados y facturas.
+ * DAO para generar reportes en HTML de cualquier tabla de la base de datos.
+ * Se puede usar para artículos, proveedores, clientes, empleados o facturas.
  */
 public class ReporteDAO {
 
     /**
-     * Genera un reporte HTML a partir de un SQL y lo guarda en un archivo.
+     * Genera un reporte HTML de cualquier consulta SQL.
      * @param titulo Título del reporte
      * @param sql Consulta SQL
-     * @param archivo Nombre del archivo HTML a generar
+     * @param archivo Nombre del archivo HTML de salida
      */
     private void generarReporte(String titulo, String sql, String archivo) {
         try (Connection con = ConexionBD.getConexion();
@@ -26,13 +26,9 @@ public class ReporteDAO {
             ResultSetMetaData meta = rs.getMetaData();
             int columnas = meta.getColumnCount();
 
-            pw.println("<html><head><meta charset='UTF-8'><title>" + titulo + "</title>");
-            pw.println("<style>table { border-collapse: collapse; width: 100%; }");
-            pw.println("th, td { border: 1px solid #999; padding: 8px; text-align: center; }");
-            pw.println("th { background-color: #f2f2f2; }</style></head><body>");
-
+            pw.println("<html><head><meta charset='UTF-8'><title>" + titulo + "</title></head><body>");
             pw.println("<h1>" + titulo + "</h1>");
-            pw.println("<table><tr>");
+            pw.println("<table border='1' cellspacing='0' cellpadding='5'><tr>");
 
             // Encabezados
             for (int i = 1; i <= columnas; i++) {
@@ -40,7 +36,7 @@ public class ReporteDAO {
             }
             pw.println("</tr>");
 
-            // Filas de datos
+            // Filas
             while (rs.next()) {
                 pw.println("<tr>");
                 for (int i = 1; i <= columnas; i++) {
@@ -53,7 +49,7 @@ public class ReporteDAO {
             System.out.println("Reporte generado: " + archivo);
 
         } catch (Exception e) {
-            System.err.println("Error al generar reporte '" + titulo + "': " + e.getMessage());
+            System.err.println("Error al generar reporte " + titulo + ": " + e.getMessage());
         }
     }
 
