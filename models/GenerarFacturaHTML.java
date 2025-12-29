@@ -4,35 +4,24 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.time.LocalDateTime;
-import java.awt.Desktop;
-import java.io.File;
+import java.time.format.DateTimeFormatter;
 
-/**
- * Clase responsable de generar facturas en formato HTML.
- * Permite crear un archivo HTML de la factura y abrirlo automáticamente en el navegador.
- */
 public class GenerarFacturaHTML {
 
-    /**
-     * Genera un archivo HTML con la información de la factura y detalles.
-     *
-     * @param factura        Objeto Factura con información general
-     * @param detalles       Lista de detalles de la factura (productos)
-     * @param nombreCliente  Nombre del cliente
-     * @param nombreEmpleado Nombre del empleado / vendedor
-     */
     public static void generar(Factura factura,
                                List<DetalleFactura> detalles,
                                String nombreCliente,
                                String nombreEmpleado) {
-        // Ruta del archivo HTML
-        String ruta = "D:/progra 2/Proyecto Progra2/Facturas/factura_" 
-                       + factura.getNumeroFactura() + ".html";
+        try {
+            // Ruta donde se guardará la factura
+            String ruta = "D:/progra 2/Proyecto Progra2/Facturas/factura_" + factura.getNumeroFactura() + ".html";
+            FileWriter archivo = new FileWriter(ruta);
 
-        // Try-with-resources asegura que FileWriter se cierre automáticamente
-        try (FileWriter archivo = new FileWriter(ruta)) {
+            // Formateador de fecha
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+            String fechaActual = LocalDateTime.now().format(formatter);
 
-            // Estructura básica HTML y estilos
+            // Estructura HTML
             archivo.write("<html>");
             archivo.write("<head>");
             archivo.write("<title>Factura #" + factura.getNumeroFactura() + "</title>");
@@ -48,7 +37,7 @@ public class GenerarFacturaHTML {
 
             archivo.write("<h1>Supertienda MAS</h1>");
             archivo.write("<h2>Factura #" + factura.getNumeroFactura() + "</h2>");
-            archivo.write("<p><b>Fecha:</b> " + LocalDateTime.now() + "</p>");
+            archivo.write("<p><b>Fecha:</b> " + fechaActual + "</p>");
             archivo.write("<p><b>Cliente:</b> " + nombreCliente + "</p>");
             archivo.write("<p><b>Vendedor:</b> " + nombreEmpleado + "</p>");
             archivo.write("<p><b>Caja:</b> " + factura.getNumeroCaja() + "</p>");
@@ -61,29 +50,29 @@ public class GenerarFacturaHTML {
                 archivo.write("<tr>");
                 archivo.write("<td>" + d.getNombreArticulo() + "</td>");
                 archivo.write("<td>" + d.getCantidad() + "</td>");
-                archivo.write("<td>Q" + d.getPrecioUnitario() + "</td>");
-                archivo.write("<td>Q" + d.getSubtotal() + "</td>");
+                archivo.write("<td>Q" + String.format("%.2f", d.getPrecioUnitario()) + "</td>");
+                archivo.write("<td>Q" + String.format("%.2f", d.getSubtotal()) + "</td>");
                 archivo.write("</tr>");
             }
             archivo.write("</table>");
 
-            archivo.write("<h3>Total: Q" + factura.getTotal() + "</h3>");
+            archivo.write("<h3>Total: Q" + String.format("%.2f", factura.getTotal()) + "</h3>");
             archivo.write("<hr>");
             archivo.write("<p>Gracias por su compra en <b>Supertienda MAS</b></p>");
 
             archivo.write("</body></html>");
+            archivo.close();
 
-            // Abrir automáticamente el archivo HTML en el navegador si es posible
-            File file = new File(ruta);
-            if (Desktop.isDesktopSupported()) {
-                Desktop.getDesktop().browse(file.toURI());
+            // Abrir automáticamente el archivo en el navegador
+            if (java.awt.Desktop.isDesktopSupported()) {
+                java.awt.Desktop.getDesktop().browse(new java.io.File(ruta).toURI());
             }
 
             System.out.println("Factura HTML generada correctamente: " + ruta);
 
         } catch (IOException e) {
-            System.err.println("Error al generar la factura HTML: " + e.getMessage());
             e.printStackTrace();
         }
     }
 }
+
