@@ -1,15 +1,37 @@
 package models;
 
+/**
+ * Representa un empleado en el sistema, con atributos básicos como código,
+ * nombre, puesto y salario. Incluye métodos para mostrarlo en la interfaz gráfica.
+ */
 public class Empleado {
 
+    // Identificador único del empleado
     private int idEmpleado;
+
+    // Código interno del empleado
     private String codigo;
+
+    // Nombre completo del empleado
     private String nombre;
+
+    // Puesto o cargo del empleado
     private String puesto;
+
+    // Salario del empleado
     private double salario;
 
+    // Constructor vacío
     public Empleado() {}
 
+    /**
+     * Constructor para crear un empleado sin ID.
+     *
+     * @param codigo Código interno
+     * @param nombre Nombre completo
+     * @param puesto Puesto o cargo
+     * @param salario Salario
+     */
     public Empleado(String codigo, String nombre, String puesto, double salario) {
         this.codigo = codigo;
         this.nombre = nombre;
@@ -17,6 +39,15 @@ public class Empleado {
         this.salario = salario;
     }
 
+    /**
+     * Constructor completo, incluyendo ID.
+     *
+     * @param idEmpleado ID del empleado
+     * @param codigo Código interno
+     * @param nombre Nombre completo
+     * @param puesto Puesto o cargo
+     * @param salario Salario
+     */
     public Empleado(int idEmpleado, String codigo, String nombre, String puesto, double salario) {
         this(codigo, nombre, puesto, salario);
         this.idEmpleado = idEmpleado;
@@ -37,6 +68,9 @@ public class Empleado {
     public double getSalario() { return salario; }
     public void setSalario(double salario) { this.salario = salario; }
 
+    /**
+     * Representación completa del empleado para depuración o logs.
+     */
     @Override
     public String toString() {
         return String.format(
@@ -45,5 +79,12 @@ public class Empleado {
         );
     }
 
-    public String toComboString() { return nombre; }
+    /**
+     * Representación simplificada del empleado para JComboBox u otras listas.
+     *
+     * @return Nombre del empleado
+     */
+    public String toComboString() {
+        return nombre;
+    }
 }
