@@ -1,17 +1,49 @@
 package models;
 
+/**
+ * Clase que representa un artículo en el sistema.
+ * Contiene información básica del artículo, como código, proveedor,
+ * nombre, descripción, cantidad en stock y precio.
+ * Se utiliza principalmente en operaciones de inventario y facturación.
+ */
 public class Articulo {
 
+    // Identificador único del artículo
     private int idArticulo;
+
+    // Código único del artículo, usado para búsquedas y referencias
     private String codigo;
+
+    // ID del proveedor asociado al artículo
     private int idProveedor;
+
+    // Nombre descriptivo del artículo
     private String nombre;
+
+    // Descripción adicional del artículo
     private String descripcion;
+
+    // Cantidad disponible en stock
     private int cantidad;
+
+    // Precio unitario del artículo
     private double precio;
 
+    /**
+     * Constructor vacío para frameworks o librerías que requieran inicialización por defecto.
+     */
     public Articulo() {}
 
+    /**
+     * Constructor para crear un artículo sin ID (por ejemplo, antes de persistir en BD).
+     *
+     * @param codigo      Código único del artículo
+     * @param idProveedor ID del proveedor
+     * @param nombre      Nombre del artículo
+     * @param descripcion Descripción del artículo
+     * @param cantidad    Cantidad en stock
+     * @param precio      Precio unitario
+     */
     public Articulo(String codigo, int idProveedor, String nombre, String descripcion, int cantidad, double precio) {
         this.codigo = codigo;
         this.idProveedor = idProveedor;
@@ -21,11 +53,23 @@ public class Articulo {
         this.precio = precio;
     }
 
+    /**
+     * Constructor completo incluyendo ID (usado al recuperar de la base de datos).
+     *
+     * @param idArticulo  ID del artículo
+     * @param codigo      Código único del artículo
+     * @param idProveedor ID del proveedor
+     * @param nombre      Nombre del artículo
+     * @param descripcion Descripción del artículo
+     * @param cantidad    Cantidad en stock
+     * @param precio      Precio unitario
+     */
     public Articulo(int idArticulo, String codigo, int idProveedor, String nombre, String descripcion, int cantidad, double precio) {
         this(codigo, idProveedor, nombre, descripcion, cantidad, precio);
         this.idArticulo = idArticulo;
     }
 
+    // Getters y setters
     public int getIdArticulo() { return idArticulo; }
     public void setIdArticulo(int idArticulo) { this.idArticulo = idArticulo; }
 
