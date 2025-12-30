@@ -6,9 +6,15 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DAO para la entidad Empleado.
+ * Proporciona métodos CRUD y de búsqueda para empleados.
+ */
 public class EmpleadoDAO {
 
-    // Agregar empleado
+    /**
+     * Agrega un nuevo empleado.
+     */
     public boolean agregarEmpleado(Empleado empleado) {
         String sql = "INSERT INTO empleados (codigo, nombre, puesto, salario) VALUES (?, ?, ?, ?)";
         try (Connection con = ConexionBD.getConexion();
@@ -18,28 +24,35 @@ public class EmpleadoDAO {
             ps.setString(2, empleado.getNombre());
             ps.setString(3, empleado.getPuesto());
             ps.setDouble(4, empleado.getSalario());
+
             return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            System.out.println("Error al agregar empleado: " + e.getMessage());
+            System.err.println("Error al agregar empleado: " + e.getMessage());
             return false;
         }
     }
 
-    // Eliminar empleado
+    /**
+     * Elimina un empleado por su ID.
+     */
     public boolean eliminarEmpleado(int idEmpleado) {
         String sql = "DELETE FROM empleados WHERE id_empleado=?";
         try (Connection con = ConexionBD.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
+
             ps.setInt(1, idEmpleado);
             return ps.executeUpdate() > 0;
+
         } catch (SQLException e) {
-            System.out.println("Error al eliminar empleado: " + e.getMessage());
+            System.err.println("Error al eliminar empleado: " + e.getMessage());
             return false;
         }
     }
 
-    // Actualizar empleado
+    /**
+     * Actualiza los datos de un empleado existente.
+     */
     public boolean actualizarEmpleado(Empleado empleado) {
         String sql = "UPDATE empleados SET codigo=?, nombre=?, puesto=?, salario=? WHERE id_empleado=?";
         try (Connection con = ConexionBD.getConexion();
@@ -50,31 +63,37 @@ public class EmpleadoDAO {
             ps.setString(3, empleado.getPuesto());
             ps.setDouble(4, empleado.getSalario());
             ps.setInt(5, empleado.getIdEmpleado());
+
             return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            System.out.println("Error al actualizar empleado: " + e.getMessage());
+            System.err.println("Error al actualizar empleado: " + e.getMessage());
             return false;
         }
     }
 
-    // Buscar por código
+    /**
+     * Busca un empleado por su código.
+     */
     public Empleado buscarPorCodigo(String codigo) {
         String sql = "SELECT * FROM empleados WHERE codigo=?";
         try (Connection con = ConexionBD.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, codigo);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return construirEmpleado(rs);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return construirEmpleado(rs);
+            }
 
         } catch (SQLException e) {
-            System.out.println("Error al buscar empleado: " + e.getMessage());
+            System.err.println("Error al buscar empleado por código: " + e.getMessage());
         }
         return null;
     }
 
-    // Listar todos
+    /**
+     * Lista todos los empleados.
+     */
     public List<Empleado> listarEmpleados() {
         List<Empleado> lista = new ArrayList<>();
         String sql = "SELECT * FROM empleados";
@@ -85,26 +104,33 @@ public class EmpleadoDAO {
             while (rs.next()) lista.add(construirEmpleado(rs));
 
         } catch (SQLException e) {
-            System.out.println("Error al listar empleados: " + e.getMessage());
+            System.err.println("Error al listar empleados: " + e.getMessage());
         }
         return lista;
     }
 
-    // Obtener por ID
+    /**
+     * Obtiene un empleado por ID.
+     */
     public Empleado obtenerPorId(int idEmpleado) {
         String sql = "SELECT * FROM empleados WHERE id_empleado=?";
         try (Connection con = ConexionBD.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
+
             ps.setInt(1, idEmpleado);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return construirEmpleado(rs);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return construirEmpleado(rs);
+            }
 
         } catch (SQLException e) {
-            System.out.println("Error al obtener empleado por ID: " + e.getMessage());
+            System.err.println("Error al obtener empleado por ID: " + e.getMessage());
         }
         return null;
     }
 
+    /**
+     * Construye un objeto Empleado a partir de un ResultSet.
+     */
     private Empleado construirEmpleado(ResultSet rs) throws SQLException {
         Empleado e = new Empleado();
         e.setIdEmpleado(rs.getInt("id_empleado"));
