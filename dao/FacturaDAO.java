@@ -5,9 +5,17 @@ import models.Factura;
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * DAO para gestionar operaciones CRUD sobre facturas.
+ * Incluye creación, búsqueda, listado y cancelación de facturas,
+ * así como interacción con detalles de factura y stock.
+ */
 public class FacturaDAO {
 
-    // Generar siguiente número correlativo de factura
+    /**
+     * Genera el siguiente número correlativo de factura.
+     * @return número de factura
+     */
     public int generarNumeroFactura() {
         int numero = 1;
         String sql = "SELECT MAX(numero_factura) AS max_num FROM facturas";
@@ -23,7 +31,11 @@ public class FacturaDAO {
         return numero;
     }
 
-    // Guardar factura
+    /**
+     * Guarda una nueva factura en la base de datos.
+     * @param factura Factura a guardar
+     * @return true si se guardó correctamente
+     */
     public boolean guardarFactura(Factura factura) {
         String sql = "INSERT INTO facturas(numero_factura, id_cliente, id_empleado, total, numero_caja) VALUES(?,?,?,?,?)";
         try (Connection con = ConexionBD.getConexion();
@@ -47,7 +59,11 @@ public class FacturaDAO {
         return false;
     }
 
-    // Cancelar factura y reintegrar stock
+    /**
+     * Cancela una factura y reintegra stock.
+     * @param idFactura ID de la factura a cancelar
+     * @return true si se canceló correctamente
+     */
     public boolean cancelarFactura(int idFactura) {
         DetalleFacturaDAO detalleDAO = new DetalleFacturaDAO();
         if (detalleDAO.reintegrarStock(idFactura)) {
@@ -63,7 +79,10 @@ public class FacturaDAO {
         return false;
     }
 
-    // Listar todas las facturas
+    /**
+     * Lista todas las facturas.
+     * @return lista de facturas
+     */
     public ArrayList<Factura> listarFacturas() {
         ArrayList<Factura> lista = new ArrayList<>();
         String sql = "SELECT * FROM facturas";
@@ -89,7 +108,12 @@ public class FacturaDAO {
         return lista;
     }
 
-    // Buscar factura por número
+    /**
+     * Busca una factura por su número.
+     * Incluye los detalles de la factura con los nombres de los artículos.
+     * @param numeroFactura Número de la factura
+     * @return factura encontrada o null si no existe
+     */
     public Factura buscarFactura(int numeroFactura) {
         Factura factura = null;
         String sql = "SELECT * FROM facturas WHERE numero_factura=?";
@@ -119,7 +143,11 @@ public class FacturaDAO {
         return factura;
     }
 
-    // Eliminar factura por número
+    /**
+     * Elimina una factura y sus detalles por número de factura.
+     * @param numeroFactura Número de la factura
+     * @return true si se eliminó correctamente
+     */
     public boolean eliminarFacturaPorNumero(int numeroFactura) {
         int idFactura = -1;
         String sqlId = "SELECT id_factura FROM facturas WHERE numero_factura=?";
