@@ -5,12 +5,20 @@ import models.DetalleFactura;
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * DAO para la entidad DetalleFactura.
+ * Proporciona métodos para gestionar detalles de facturas, 
+ * incluyendo almacenamiento, listado y reintegro de stock.
+ */
 public class DetalleFacturaDAO {
 
-    // Guardar detalle
+    /**
+     * Guarda un nuevo detalle de factura y descuenta el stock correspondiente.
+     */
     public boolean guardarDetalle(DetalleFactura detalle) {
         String sql = "INSERT INTO detalle_factura(id_factura, id_articulo, cantidad, precio_unitario, subtotal) VALUES(?,?,?,?,?)";
         ArticuloDAO articuloDAO = new ArticuloDAO();
+
         try (Connection con = ConexionBD.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -26,15 +34,18 @@ public class DetalleFacturaDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Error al guardar detalle: " + e.getMessage());
+            System.err.println("Error al guardar detalle: " + e.getMessage());
         }
         return false;
     }
 
-    // Reintegrar stock al cancelar factura
+    /**
+     * Reintegra el stock de los artículos asociados a una factura y elimina sus detalles.
+     */
     public boolean reintegrarStock(int idFactura) {
         String sql = "SELECT id_articulo, cantidad FROM detalle_factura WHERE id_factura=?";
         ArticuloDAO articuloDAO = new ArticuloDAO();
+
         try (Connection con = ConexionBD.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -52,15 +63,18 @@ public class DetalleFacturaDAO {
             return true;
 
         } catch (SQLException e) {
-            System.out.println("Error al reintegrar stock: " + e.getMessage());
+            System.err.println("Error al reintegrar stock: " + e.getMessage());
             return false;
         }
     }
 
-    // Listar detalles
+    /**
+     * Lista todos los detalles de una factura.
+     */
     public ArrayList<DetalleFactura> listarDetalles(int idFactura) {
         ArrayList<DetalleFactura> lista = new ArrayList<>();
         String sql = "SELECT * FROM detalle_factura WHERE id_factura=?";
+
         try (Connection con = ConexionBD.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -69,12 +83,14 @@ public class DetalleFacturaDAO {
             while (rs.next()) lista.add(construirDetalle(rs));
 
         } catch (SQLException e) {
-            System.out.println("Error al listar detalles: " + e.getMessage());
+            System.err.println("Error al listar detalles: " + e.getMessage());
         }
         return lista;
     }
 
-    // Listar detalles con nombre del artículo
+    /**
+     * Lista todos los detalles de una factura junto con el nombre del artículo.
+     */
     public ArrayList<DetalleFactura> listarDetallesConArticulo(int idFactura) {
         ArrayList<DetalleFactura> lista = new ArrayList<>();
         String sql = "SELECT d.id_detalle, d.id_factura, d.id_articulo, a.nombre AS nombre_articulo, " +
@@ -90,10 +106,12 @@ public class DetalleFacturaDAO {
             while (rs.next()) lista.add(construirDetalleConArticulo(rs));
 
         } catch (SQLException e) {
-            System.out.println("Error al listar detalles con artículo: " + e.getMessage());
+            System.err.println("Error al listar detalles con artículo: " + e.getMessage());
         }
         return lista;
     }
+
+    // --- Métodos auxiliares ---
 
     private DetalleFactura construirDetalle(ResultSet rs) throws SQLException {
         DetalleFactura d = new DetalleFactura();
