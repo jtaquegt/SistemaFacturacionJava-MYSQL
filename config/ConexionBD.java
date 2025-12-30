@@ -4,15 +4,24 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Clase de conexión a la base de datos MySQL.
+ * 
+ * Esta versión está preparada para repositorio público:
+ * - Se usan placeholders para usuario y contraseña.
+ * - Manejo de excepciones robusto.
+ * - Permite abrir y cerrar la conexión de manera segura.
+ */
 public class ConexionBD {
-    // URL de conexión a la base de datos MySQL
-    private static final String URL = "jdbc:mysql://localhost:3306/tienda_mas?useSSL=false&serverTimezone=UTC";
-    // Usuario de la base de datos
-    private static final String USER = "root";
-    // Contraseña de la base de datos (CAMBIAR en producción)
-    private static final String PASSWORD = "Admin";
 
-    // Objeto conexión estático para singleton
+    // URL de conexión (ajustar según entorno)
+    private static final String URL = "jdbc:mysql://localhost:3306/BASE_DE_DATOS?useSSL=false&serverTimezone=UTC";
+    // Usuario de la base de datos (placeholder)
+    private static final String USER = "USUARIO";
+    // Contraseña de la base de datos (placeholder)
+    private static final String PASSWORD = "CONTRASEÑA";
+
+    // Objeto Connection estático para reutilizar la conexión
     private static Connection conexion;
 
     /**
@@ -24,9 +33,12 @@ public class ConexionBD {
     public static Connection getConexion() {
         try {
             if (conexion == null || conexion.isClosed()) {
-                Class.forName("com.mysql.cj.jdbc.Driver"); // cargar driver MySQL (opcional desde Java 6)
+                // Cargar driver MySQL (opcional en Java modernos)
+                Class.forName("com.mysql.cj.jdbc.Driver");
+
+                // Crear la conexión
                 conexion = DriverManager.getConnection(URL, USER, PASSWORD);
-                System.out.println("Conexión exitosa a MySQL");
+                System.out.println("Conexión exitosa a la base de datos MySQL");
             }
         } catch (ClassNotFoundException e) {
             System.err.println("Driver de MySQL no encontrado: " + e.getMessage());
@@ -45,7 +57,7 @@ public class ConexionBD {
         try {
             if (conexion != null && !conexion.isClosed()) {
                 conexion.close();
-                System.out.println("Conexión cerrada");
+                System.out.println("Conexión cerrada correctamente");
             }
         } catch (SQLException e) {
             System.err.println("Error al cerrar la conexión: " + e.getMessage());
