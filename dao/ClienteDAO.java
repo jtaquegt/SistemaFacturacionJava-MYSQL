@@ -6,9 +6,18 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object (DAO) para la entidad Cliente.
+ * Proporciona métodos para CRUD y búsqueda de clientes.
+ */
 public class ClienteDAO {
 
-    // Crear nuevo cliente
+    /**
+     * Agrega un nuevo cliente a la base de datos.
+     *
+     * @param cliente Objeto Cliente a agregar.
+     * @return true si se insertó correctamente, false en caso de error.
+     */
     public boolean agregarCliente(Cliente cliente) {
         String sql = "INSERT INTO clientes (nit, nombre, direccion) VALUES (?, ?, ?)";
         try (Connection con = ConexionBD.getConexion();
@@ -17,28 +26,35 @@ public class ClienteDAO {
             ps.setString(1, cliente.getNit());
             ps.setString(2, cliente.getNombre());
             ps.setString(3, cliente.getDireccion());
+
             return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            System.out.println("Error al agregar cliente: " + e.getMessage());
+            System.err.println("Error al agregar cliente: " + e.getMessage());
             return false;
         }
     }
 
-    // Eliminar cliente
+    /**
+     * Elimina un cliente por su ID.
+     */
     public boolean eliminarCliente(int idCliente) {
         String sql = "DELETE FROM clientes WHERE id_cliente=?";
         try (Connection con = ConexionBD.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
+
             ps.setInt(1, idCliente);
             return ps.executeUpdate() > 0;
+
         } catch (SQLException e) {
-            System.out.println("Error al eliminar cliente: " + e.getMessage());
+            System.err.println("Error al eliminar cliente: " + e.getMessage());
             return false;
         }
     }
 
-    // Actualizar cliente
+    /**
+     * Actualiza los datos de un cliente existente.
+     */
     public boolean actualizarCliente(Cliente cliente) {
         String sql = "UPDATE clientes SET nit=?, nombre=?, direccion=? WHERE id_cliente=?";
         try (Connection con = ConexionBD.getConexion();
@@ -48,47 +64,56 @@ public class ClienteDAO {
             ps.setString(2, cliente.getNombre());
             ps.setString(3, cliente.getDireccion());
             ps.setInt(4, cliente.getIdCliente());
+
             return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            System.out.println("Error al actualizar cliente: " + e.getMessage());
+            System.err.println("Error al actualizar cliente: " + e.getMessage());
             return false;
         }
     }
 
-    // Buscar por NIT
+    /**
+     * Busca un cliente por su NIT.
+     */
     public Cliente buscarPorNit(String nit) {
         String sql = "SELECT * FROM clientes WHERE nit=?";
         try (Connection con = ConexionBD.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, nit);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return construirCliente(rs);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return construirCliente(rs);
+            }
 
         } catch (SQLException e) {
-            System.out.println("Error al buscar cliente por NIT: " + e.getMessage());
+            System.err.println("Error al buscar cliente por NIT: " + e.getMessage());
         }
         return null;
     }
 
-    // Buscar por nombre (parcial)
+    /**
+     * Busca un cliente por nombre (búsqueda parcial).
+     */
     public Cliente buscarPorNombre(String nombre) {
         String sql = "SELECT * FROM clientes WHERE nombre LIKE ?";
         try (Connection con = ConexionBD.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, "%" + nombre + "%");
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return construirCliente(rs);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return construirCliente(rs);
+            }
 
         } catch (SQLException e) {
-            System.out.println("Error al buscar cliente por nombre: " + e.getMessage());
+            System.err.println("Error al buscar cliente por nombre: " + e.getMessage());
         }
         return null;
     }
 
-    // Listar todos los clientes
+    /**
+     * Lista todos los clientes.
+     */
     public List<Cliente> listarClientes() {
         List<Cliente> lista = new ArrayList<>();
         String sql = "SELECT * FROM clientes";
@@ -99,27 +124,33 @@ public class ClienteDAO {
             while (rs.next()) lista.add(construirCliente(rs));
 
         } catch (SQLException e) {
-            System.out.println("Error al listar clientes: " + e.getMessage());
+            System.err.println("Error al listar clientes: " + e.getMessage());
         }
         return lista;
     }
 
-    // Obtener por ID
+    /**
+     * Obtiene un cliente por su ID.
+     */
     public Cliente obtenerPorId(int idCliente) {
         String sql = "SELECT * FROM clientes WHERE id_cliente=?";
         try (Connection con = ConexionBD.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
+
             ps.setInt(1, idCliente);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return construirCliente(rs);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return construirCliente(rs);
+            }
 
         } catch (SQLException e) {
-            System.out.println("Error al obtener cliente por ID: " + e.getMessage());
+            System.err.println("Error al obtener cliente por ID: " + e.getMessage());
         }
         return null;
     }
 
-    // Helper
+    /**
+     * Construye un objeto Cliente a partir de un ResultSet.
+     */
     private Cliente construirCliente(ResultSet rs) throws SQLException {
         Cliente c = new Cliente();
         c.setIdCliente(rs.getInt("id_cliente"));
