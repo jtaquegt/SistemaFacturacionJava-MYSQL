@@ -4,8 +4,19 @@ import config.ConexionBD;
 import java.io.*;
 import java.sql.*;
 
+/**
+ * DAO para generación de reportes HTML de las entidades de la aplicación.
+ * Permite crear reportes de artículos, proveedores, clientes, empleados y facturas.
+ */
 public class ReporteDAO {
 
+    /**
+     * Genera un reporte HTML a partir de un query SQL.
+     *
+     * @param titulo  Título del reporte
+     * @param sql     Consulta SQL que devuelve los datos
+     * @param archivo Ruta y nombre del archivo HTML de salida
+     */
     private void generarReporte(String titulo, String sql, String archivo) {
         try (Connection con = ConexionBD.getConexion();
              Statement st = con.createStatement();
@@ -19,9 +30,11 @@ public class ReporteDAO {
             pw.println("<h1>" + titulo + "</h1>");
             pw.println("<table border='1' cellspacing='0' cellpadding='5'><tr>");
 
+            // Cabecera de tabla
             for (int i = 1; i <= columnas; i++) pw.println("<th>" + meta.getColumnName(i) + "</th>");
             pw.println("</tr>");
 
+            // Filas de datos
             while (rs.next()) {
                 pw.println("<tr>");
                 for (int i = 1; i <= columnas; i++) pw.println("<td>" + rs.getString(i) + "</td>");
@@ -32,9 +45,11 @@ public class ReporteDAO {
             System.out.println("Reporte generado: " + archivo);
 
         } catch (Exception e) {
-            System.out.println("Error al generar reporte " + titulo + ": " + e.getMessage());
+            System.err.println("Error al generar reporte " + titulo + ": " + e.getMessage());
         }
     }
+
+    // --- Métodos específicos de reporte ---
 
     public void reporteArticulos() {
         generarReporte("Reporte de Artículos", "SELECT * FROM articulos", "Reporte_Articulos.html");
