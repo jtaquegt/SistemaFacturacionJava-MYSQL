@@ -5,12 +5,7 @@ import java.sql.*;
 import java.awt.Desktop;
 
 import config.ConexionBD;
-import dao.DetalleFacturaDAO;
-import dao.FacturaDAO;
-import java.util.ArrayList;
 import javax.swing.JOptionPane;
-import models.DetalleFactura;
-import models.Factura;
 
 public class FrmReportes extends javax.swing.JFrame {
     
@@ -22,11 +17,6 @@ public class FrmReportes extends javax.swing.JFrame {
     public FrmReportes() {
         initComponents();
         setLocationRelativeTo(null);
-        
-    }
-
-    FrmReportes(FrmPrincipal aThis) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     /**
@@ -97,15 +87,15 @@ public class FrmReportes extends javax.swing.JFrame {
             }
         });
 
-        lblReferencia.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        lblReferencia.setFont(new java.awt.Font("Segoe UI", 0, 10));
         lblReferencia.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblReferencia.setText("Diseñado y Desarrollado por");
 
-        lblEmpresa.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        lblEmpresa.setFont(new java.awt.Font("Segoe UI", 0, 10));
         lblEmpresa.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblEmpresa.setText("GENERANDO BITS");
 
-        lblDesarrollador.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        lblDesarrollador.setFont(new java.awt.Font("Segoe UI", 0, 10));
         lblDesarrollador.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblDesarrollador.setText("Jairon Taque");
 
@@ -174,7 +164,6 @@ public class FrmReportes extends javax.swing.JFrame {
     }// </editor-fold>                        
 
     private void btnReporteArticulosActionPerformed(java.awt.event.ActionEvent evt) {                                                    
-        // TODO add your handling code here:
         String sql = "SELECT codigo, nombre, descripcion, cantidad, precio FROM articulos";
         String[] columnas = {"codigo", "nombre", "descripcion", "cantidad", "precio"};
 
@@ -190,8 +179,7 @@ public class FrmReportes extends javax.swing.JFrame {
     }                                                   
 
     private void btnReporteProveedoresActionPerformed(java.awt.event.ActionEvent evt) {                                                      
-        // TODO add your handling code here:
-         String sql = "SELECT nit, nombre, direccion, telefono FROM proveedores";
+        String sql = "SELECT nit, nombre, direccion, telefono FROM proveedores";
         String[] columnas = {"nit", "nombre", "direccion", "telefono"};
 
         try (Connection con = ConexionBD.getConexion();
@@ -206,8 +194,7 @@ public class FrmReportes extends javax.swing.JFrame {
     }                                                     
 
     private void btnReporteClientesActionPerformed(java.awt.event.ActionEvent evt) {                                                   
-        // TODO add your handling code here:
-         String sql = "SELECT nit, nombre, direccion FROM clientes";
+        String sql = "SELECT nit, nombre, direccion FROM clientes";
         String[] columnas = {"nit", "nombre", "direccion"};
 
         try (Connection con = ConexionBD.getConexion();
@@ -222,8 +209,7 @@ public class FrmReportes extends javax.swing.JFrame {
     }                                                  
 
     private void btnReporteEmpleadosActionPerformed(java.awt.event.ActionEvent evt) {                                                    
-        // TODO add your handling code here:
-         String sql = "SELECT codigo, nombre, puesto, salario FROM empleados";
+        String sql = "SELECT codigo, nombre, puesto, salario FROM empleados";
         String[] columnas = {"codigo", "nombre", "puesto", "salario"};
 
         try (Connection con = ConexionBD.getConexion();
@@ -237,52 +223,72 @@ public class FrmReportes extends javax.swing.JFrame {
         }
     }                                                   
 
+    private void btnReporteFacturasActionPerformed(java.awt.event.ActionEvent evt) {                                                   
+        String sql = "SELECT f.numero_factura, f.id_cliente, f.id_empleado, f.fecha, f.total, f.numero_caja, " +
+                "a.nombre AS articulo, d.cantidad, d.precio_unitario, d.subtotal " +
+                "FROM facturas f " +
+                "INNER JOIN detalle_factura d ON f.id_factura = d.id_factura " +
+                "INNER JOIN articulos a ON d.id_articulo = a.id_articulo " +
+                "ORDER BY f.numero_factura";
+
+        String[] columnas = {"numero_factura", "id_cliente", "id_empleado", "fecha", "total", "numero_caja",
+                             "articulo", "cantidad", "precio_unitario", "subtotal"};
+
+        try (Connection con = ConexionBD.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            generarReporteHTML(rs, "Reporte_Facturas.html", "Reporte de Facturas", columnas);
+            JOptionPane.showMessageDialog(this, "Reporte de facturas generado correctamente.");
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al generar reporte de facturas: " + e.getMessage());
+            e.printStackTrace();
+        }       
+    }                                                  
+
     private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        // TODO add your handling code here:
         FrmPrincipal principal = new FrmPrincipal();
         principal.setVisible(true);
-
         this.dispose();
     }                                        
 
-    private void btnReporteFacturasActionPerformed(java.awt.event.ActionEvent evt) {                                                   
-         // TODO add your handling code here:
-            String sql = "SELECT f.numero_factura, f.id_cliente, f.id_empleado, f.fecha, f.total, f.numero_caja, " +
-                    "a.nombre AS articulo, d.cantidad, d.precio_unitario, d.subtotal " +
-                    "FROM facturas f " +
-                    "INNER JOIN detalle_factura d ON f.id_factura = d.id_factura " +
-                    "INNER JOIN articulos a ON d.id_articulo = a.id_articulo " +
-                    "ORDER BY f.numero_factura";
+    public void generarReporteHTML(ResultSet rs, String nombreArchivo, String titulo, String[] columnas) {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(nombreArchivo));
 
-       // Columnas que se mostrarán en el HTML
-       String[] columnas = {"numero_factura", "id_cliente", "id_empleado", "fecha", "total", "numero_caja",
-                            "articulo", "cantidad", "precio_unitario", "subtotal"};
+            writer.write("<html><head><title>" + titulo + "</title></head><body>");
+            writer.write("<h2>" + titulo + "</h2>");
+            writer.write("<table border='1' style='border-collapse:collapse;'>");
 
-       try (Connection con = ConexionBD.getConexion();
-            PreparedStatement ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery()) {
+            // Encabezados
+            writer.write("<tr>");
+            for (String col : columnas) {
+                writer.write("<th>" + col + "</th>");
+            }
+            writer.write("</tr>");
 
-           // Llamamos al método funcional que ya genera HTML
-           generarReporteHTML(rs, "Reporte_Facturas.html", "Reporte de Facturas", columnas);
+            // Filas
+            while (rs.next()) {
+                writer.write("<tr>");
+                for (String col : columnas) {
+                    writer.write("<td>" + rs.getString(col) + "</td>");
+                }
+                writer.write("</tr>");
+            }
 
-           JOptionPane.showMessageDialog(this, "Reporte de facturas generado correctamente.");
+            writer.write("</table></body></html>");
+            writer.close();
 
-       } catch (SQLException e) {
-           JOptionPane.showMessageDialog(this, "Error al generar reporte de facturas: " + e.getMessage());
-           e.printStackTrace();
-       }       
-    }                                                  
+            Desktop.getDesktop().browse(new File(nombreArchivo).toURI());
 
-    
-    /**
-     * @param args the command line arguments
-     */
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al generar reporte: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -293,49 +299,10 @@ public class FrmReportes extends javax.swing.JFrame {
         } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
 
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new FrmReportes().setVisible(true));
     }
 
-        public void generarReporteHTML(ResultSet rs, String nombreArchivo, String titulo, String[] columnas) {
-            try {
-                BufferedWriter writer = new BufferedWriter(new FileWriter(nombreArchivo));
-
-                writer.write("<html><head><title>" + titulo + "</title></head><body>");
-                writer.write("<h2>" + titulo + "</h2>");
-                writer.write("<table border='1' style='border-collapse:collapse;'>");
-
-                // Encabezados
-                writer.write("<tr>");
-                for (String col : columnas) {
-                    writer.write("<th>" + col + "</th>");
-                }
-                writer.write("</tr>");
-
-                // Filas
-                while (rs.next()) {
-                    writer.write("<tr>");
-                    for (String col : columnas) {
-                        writer.write("<td>" + rs.getString(col) + "</td>");
-                    }
-                    writer.write("</tr>");
-                }
-
-                writer.write("</table></body></html>");
-                writer.close();
-
-                // Abrir automáticamente en el navegador
-                Desktop.getDesktop().browse(new File(nombreArchivo).toURI());
-
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Error al generar reporte: " + e.getMessage());
-                e.printStackTrace();
-            }
-    }
-    
-    
     // Variables declaration - do not modify                     
     private javax.swing.JButton btnAtras;
     private javax.swing.JButton btnReporteArticulos;
