@@ -1,7 +1,7 @@
 # 💻 Sistema de Facturación Java - MySQL
 
-Bienvenido a mi **proyecto profesional de sistema de facturación y gestión comercial**, desarrollado en **Java** con **MySQL**.  
-Este sistema está diseñado para pequeñas empresas y startups que buscan un control completo de inventario, clientes, proveedores y facturación.
+Bienvenido a mi **proyecto de Sistema Facturacion Java-MYSQL, este es un sistema profesional de facturación y gestión comercial, desarrollado en Java con MySQL** 
+Este sistema es ideal para pequeñas empresas y startups que buscan un control completo de inventario, clientes, proveedores y facturación.
 
 ---
 
@@ -14,6 +14,14 @@ Este sistema está diseñado para pequeñas empresas y startups que buscan un co
 - 💡 Base sólida y extensible, lista para mejoras o integraciones futuras
 
 ---
+## 🖼️  Capturas de pantalla
+- 💡 **Pantalla principal**
+- 🛒 **Gestión de artículos, proveedores, clientes y empleados**  
+- 🧾 **Factura** con control de inventario y posibilidad de cancelar facturas  
+- 📊 **Reportes en HTML** para revisión rápida de ventas y stock  
+- 🏗️ **Arquitectura MVC** + **patrón DAO** para código modular y mantenible  
+
+---
 
 ## 🛠️ Tecnologías utilizadas
 
@@ -23,25 +31,6 @@ Este sistema está diseñado para pequeñas empresas y startups que buscan un co
 - **MVC + DAO** (Patrones de diseño y separación de responsabilidades)
 
 ---
-ok, esa version que me das unificala a esta # SistemaFacturacionJava-MYSQL
-
-Este proyecto es un sistema de facturación y gestión comercial desarrollado en Java, usando MySQL como base de datos.
-
-## Funcionalidades principales
-
-- Gestión de artículos, proveedores, clientes y empleados.
-- Facturación con control de inventario y cancelación de facturas.
-- Reportes en formato HTML.
-- Arquitectura MVC y patrón DAO.
-
-## Tecnologías usadas
-
-- Java (NetBeans)
-- MySQL
-
-## Descripción
-
-Sistema desarrollado para gestionar productos, proveedores, clientes, empleados y facturación completa con lógica de negocio real. Base sólida para pequeñas empresas y startups.
 
 ---
 
