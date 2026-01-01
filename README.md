@@ -16,9 +16,13 @@ Este sistema es ideal para pequeñas empresas y startups que buscan un control c
 ---
 ## 🖼️  Capturas de pantalla
 - 💡 **Pantalla principal**
-- 🛒 **Gestión de artículos, proveedores, clientes y empleados**  
-- 🧾 **Factura** con control de inventario y posibilidad de cancelar facturas  
-- 📊 **Reportes en HTML** para revisión rápida de ventas y stock  
+- 
+- 🛒 **Gestión de artículos, proveedores, clientes y empleados**
+- 
+- 🧾 **Factura** con control de inventario y posibilidad de cancelar facturas
+-  
+- 📊 **Reportes en HTML** para revisión rápida de ventas y stock
+- 
 - 🏗️ **Arquitectura MVC** + **patrón DAO** para código modular y mantenible  
 
 ---
@@ -34,14 +38,14 @@ Este sistema es ideal para pequeñas empresas y startups que buscan un control c
 
 ## 📝 Uso
 
-1.	Clientes: Buscar, agregar o modificar información antes de generar la factura.
-2.	Artículos: Agregar productos al inventario y seleccionarlos al facturar.
-3.	Facturación:
-             o	Generar factura con detalles de artículos y empleado responsable.
-             o	Cancelar o eliminar facturas existentes.
-             o	Consultar facturas por número.
-4.	Reportes: Generar reportes en HTML para revisión rápida de ventas y stock.
- 
+- **Clientes:** Buscar, agregar o modificar información antes de generar la factura. 
+- **Artículos:** Agregar productos al inventario y seleccionarlos al facturar. 
+- **Facturación:**
+        - Generar factura con detalles de artículos y empleado responsable.
+        - Cancelar o eliminar facturas existentes.
+        - Consultar facturas por número.
+- **Reportes:** Generar reportes en HTML para revisión rápida de ventas y stock.
+  
 ---
 
 ## Nota importante
