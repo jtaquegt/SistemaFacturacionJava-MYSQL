@@ -33,16 +33,15 @@ Este sistema es ideal para pequeñas empresas y startups que buscan un control c
 ---
 
 ## 📝 Uso
-<details> <summary>Haz clic para expandir</summary> 
+
 1.	Clientes: Buscar, agregar o modificar información antes de generar la factura.
 2.	Artículos: Agregar productos al inventario y seleccionarlos al facturar.
 3.	Facturación:
-o	Generar factura con detalles de artículos y empleado responsable.
-o	Cancelar o eliminar facturas existentes.
-o	Consultar facturas por número.
+             o	Generar factura con detalles de artículos y empleado responsable.
+             o	Cancelar o eliminar facturas existentes.
+             o	Consultar facturas por número.
 4.	Reportes: Generar reportes en HTML para revisión rápida de ventas y stock.
-</details> 
-
+ 
 ---
 
 ## Nota importante
